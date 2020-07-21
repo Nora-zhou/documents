@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath">C:\Users\nozhou\Downloads\测试jar\commons-lang3-3.8.1.jar,C:\Users\nozhou\Downloads\测试jar\ddpf-security-1.0-SNAPSHOT.jar,C:\Users\nozhou\Downloads\测试jar\ddpf-service-1.0-SNAPSHOT.jar,C:\Users\nozhou\Downloads\测试jar\fastjson-1.2.59.jar,C:\Users\nozhou\Downloads\测试jar\fql-api-sdk-1.0.0-20180531.025201-3.jar,C:\Users\nozhou\Downloads\测试jar\slf4j-api-1.7.21.jar,C:\Users\nozhou\software\apache-jmeter-5.3\lib\gateway.jar</stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+          <stringProp name="filename">C:/Users/nozhou/Desktop/测试样本数据10.CSV</stringProp>
+          <stringProp name="fileEncoding"></stringProp>
+          <stringProp name="variableNames">name,phone,idCard,bankCard</stringProp>
+          <boolProp name="ignoreFirstLine">false</boolProp>
+          <stringProp name="delimiter">,</stringProp>
+          <boolProp name="quotedData">false</boolProp>
+          <boolProp name="recycle">true</boolProp>
+          <boolProp name="stopThread">false</boolProp>
+          <stringProp name="shareMode">shareMode.all</stringProp>
+        </CSVDataSet>
+        <hashTree/>
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+          <boolProp name="displayJMeterProperties">false</boolProp>
+          <boolProp name="displayJMeterVariables">true</boolProp>
+          <boolProp name="displaySystemProperties">false</boolProp>
+        </DebugSampler>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="script">import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.fenqile.bean.lt.request.LeTuRequestBean;
+import com.fenqile.cipher.RsaUtil;
+import gateway.FqlDefaultClient;
+import gateway.req.FqlRequest;
+import gateway.FqlDefaultClient;
+
+import java.util.HashMap;
+import java.util.Map;
+       System.out.print(&quot;hello start &quot;);
+
+        // 账户鉴权Key
+        String apiKey = &quot;541a0e9bb7f94695a1d9a7f1e920482a&quot;;
+        // 商户编号
+        String merchantId = &quot;100&quot;;
+        // 业务编号
+        String businessId = &quot;1001&quot;;
+        // 加密类型
+        Integer encType = 3;
+        // 回溯时间
+        String encDate = &quot;2020-01-02&quot;;
+
+        // RSA公钥
+        String pubKey = &quot;MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCq7KRP0zMsx5jiaslnb9h49EkM\n&quot; +
+                &quot;sf97sF2r2LxW+jx0sQATmeQqzqFWCoGQuN3m+c7XNdZ4we7caR11Opf2G38kc1Sl\n&quot; +
+                &quot;8YZ9Upd+5Y+9ujL27rbiswEHryAaJggz1qlYLa4XXlAiefhJxQ2/trsvEu2DW42B\n&quot; +
+                &quot;GirWMorD3G5bnvWmmwIDAQAB&quot;;
+
+        /**********************************************************************************************************
+         *                                   四要素
+         **********************************************************************************************************/
+
+        String name = &quot;${name}&quot;;
+        String phone = &quot;${phone}&quot;;
+        String idCard = &quot;${idCard}&quot;;
+        String bankCard = &quot;${bankCard}&quot;;
+
+        /**********************************************************************************************************
+         *                                   网关核心字段
+         **********************************************************************************************************/
+
+        // 测试环境网关地址, 需配置host 【10.9.22.52 stable.api.dev-fql.com】
+        String server = &quot;http://stable.api.dev-fql.com&quot;;
+        // 网关配置路径
+        String url = &quot;/route0004/lecha/queryRiskScore.json&quot;;
+        // 网关鉴权字段, 需接入申请
+        String appKey = &quot;003020&quot;;
+        String appSecret = &quot;2b50e0adf4fac1bfc4cf55e346faf1f2&quot;;
+
+        /**********************************************************************************************************
+         *                                   乐查接口调用
+         **********************************************************************************************************/
+
+        // 组装请求参数
+        Map map = new HashMap();
+        map.put(&quot;name&quot;, name);
+        map.put(&quot;phone&quot;, phone);
+        map.put(&quot;idCard&quot;, idCard);
+        map.put(&quot;bankCard&quot;, bankCard);
+        String fourElements = JSON.toJSONString(map);
+
+        // 参数加密
+        String encData = RsaUtil.encryptRsaByKey(fourElements, pubKey);
+
+        // 组装请求参数
+        LeTuRequestBean leTuOrgRequestBean = new LeTuRequestBean();
+        leTuOrgRequestBean.setApiKey(apiKey);
+        leTuOrgRequestBean.setMerchantId(merchantId);
+        leTuOrgRequestBean.setBusinessId(businessId);
+        leTuOrgRequestBean.setEncType(encType);
+        leTuOrgRequestBean.setApplyDate(encDate);
+        leTuOrgRequestBean.setEncData(encData);
+        String data = JSON.toJSONString(leTuOrgRequestBean);
+
+    	  
+		
+ 	   FqlDefaultClient client = new FqlDefaultClient(server, 3000, 3000, appKey, appSecret);
+        FqlRequest fqlRequest = new FqlRequest();
+        fqlRequest.setData(data);
+
+        JSONObject sign = client.sign(url, fqlRequest);
+        String request = JSON.toJSONString(sign);
+
+        System.err.println(&quot;app网关请求参数: &quot; + request);
+        vars.put(&quot;requst&quot;,request);
+        vars.put(&quot;name1&quot;,name);
+        vars.put(&quot;idCard1&quot;,idCard);
+        vars.put(&quot;phone1&quot;,phone);
+        vars.put(&quot;bankCard1&quot;,bankCard);</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${requst}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">stable.api.dev-fql.com</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/route0004/lecha/queryRiskScore.json</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

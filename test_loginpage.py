@@ -22,8 +22,9 @@ def login():
     # wb.getElement("class", "btn-text").click()
     # wb.driver.switch_to.default_content()
     # wb.ExcuteJs(
-    wb.ExcuteJs(
-        "document.getElementsByClassName(\"sign-btn primary__color primary__link-hover sign-in cursor-pointer\")[0].click()")
+    #     "document.getElementsByClassName(\"sign-btn primary__color primary__link-hover sign-in cursor-pointer\")[0].click()")
+    # 点击登录按钮
+    wb.getElement("xpath", "//a[@class='sign-btn primary__color primary__link-hover sign-in cursor-pointer']").click()
 
     # 切换到登录框
     wb.driver.switch_to_frame("SignIn-ZH_CN")
@@ -57,7 +58,7 @@ def login():
         # status = wb.getElement("id", "statusSuccess")
         # time.sleep(2)
         try:
-            # WebDriverWait(wb, 5).until(EC.presence_of_all_elements_located(By.XPATH("//*[@id='tcaptcha_note']")))
+            WebDriverWait(wb, 5).until(EC.presence_of_all_elements_located(By.XPATH("//*[@id='tcaptcha_note']")))
             wb.wait_element(["xpath", "//*[@id='tcaptcha_note']"])
             status = wb.getElement("xpath", "//*[@id='tcaptcha_note']").text
         except:

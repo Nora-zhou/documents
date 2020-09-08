@@ -10,40 +10,47 @@ from TestCase.pageUtils import *
 
 
 def login():
-    url = "https://blink.qq.com/b2bshop/index/industrySites/174133321650266123"
-    login_name = "testSeller03"
-    login_password = "123@qq"
-    wb = webutils(browser='chrome')
-    wb.driver.get(url)
-    wb.driver.maximize_window()
-    time.sleep(5)
-    # # 切换到iframe
-    # wb.driver.switch_to_frame("_QD_INVITE_IFRAME_ID_PREFIX_2852150878")
-    # wb.getElement("class", "btn-text").click()
-    # wb.driver.switch_to.default_content()
-    # wb.ExcuteJs(
-    #     "document.getElementsByClassName(\"sign-btn primary__color primary__link-hover sign-in cursor-pointer\")[0].click()")
-    # 点击登录按钮
-    wb.getElement("xpath", "//a[@class='sign-btn primary__color primary__link-hover sign-in cursor-pointer']").click()
+    try:
+        url = "https://blink.qq.com/b2bshop/index/industrySites/174133321650266123"
+        login_name = "testSeller03"
+        login_password = "123@qq"
+        wb = webutils(browser='chrome')
+        wb.driver.get(url)
+        wb.driver.maximize_window()
+        time.sleep(5)
+        # # 切换到iframe
+        # wb.driver.switch_to_frame("_QD_INVITE_IFRAME_ID_PREFIX_2852150878")
+        # wb.getElement("class", "btn-text").click()
+        # wb.driver.switch_to.default_content()
+        # wb.ExcuteJs(
+        #     "document.getElementsByClassName(\"sign-btn primary__color primary__link-hover sign-in cursor-pointer\")[0].click()")
+        # 点击登录按钮
+        wb.getElement("xpath",
+                      "//[@class='sign-btn primary__color primary__link-hover sign-in cursor-pointer']").click()
 
-    # 切换到登录框
-    wb.driver.switch_to_frame("SignIn-ZH_CN")
-    wb.getElement("name", "username").send_keys(login_name)
-    time.sleep(2)
-    wb.getElement("name", "password").send_keys(login_password)
-    wb.ExcuteJs("document.getElementsByClassName(\"v-button v-button--primary v-button--medium\")[0].click()")
-    time.sleep(5)
-    # wb.wait(10)
-    print(123)
-    wb.driver.switch_to_frame("tcaptcha_iframe")
-    # # 定位滑块
-    # block = wb.getElement("id", "tcaptcha_drag_thumb")
-    # action = ActionChains(wb.driver)
-    # action.click_and_hold(block).move_by_offset(210, 0).release().perform()
-    # wb.driver.switch_to.default_content()
-    # time.sleep(6)
+        # 切换到登录框
+        wb.driver.switch_to_frame("SignIn-ZH_CN")
+        wb.getElement("name", "username").send_keys(login_name)
+        time.sleep(2)
+        wb.getElement("name", "password").send_keys(login_password)
+        wb.ExcuteJs("document.getElementsByClassName(\"v-button v-button--primary v-button--medium\")[0].click()")
+        time.sleep(5)
+        # wb.wait(10)
+        print(123)
+        wb.driver.switch_to_frame("tcaptcha_iframe")
+        # # 定位滑块
+        # block = wb.getElement("id", "tcaptcha_drag_thumb")
+        # action = ActionChains(wb.driver)
+        # action.click_and_hold(block).move_by_offset(210, 0).release().perform()
+        # wb.driver.switch_to.default_content()
+        # time.sleep(6)
 
-    # 定位滑块
+        # 定位滑块
+    except:
+        # print("异常原因%s" % msg)
+        wb.get_screenshot()
+        raise
+
     status = '请控制拼图块对齐缺口'
     while status == "请控制拼图块对齐缺口" or status == "Put the piece right into the slot":
 
@@ -62,6 +69,7 @@ def login():
             wb.wait_element(["xpath", "//*[@id='tcaptcha_note']"])
             status = wb.getElement("xpath", "//*[@id='tcaptcha_note']").text
         except:
+            wb.get_screenshot()
             status = ''
         print(status)
         # if status == "请控制拼图块对齐缺口":
@@ -95,16 +103,23 @@ def login():
     return wb
 
 
-# def test_baseinfo():
-#     wb = login()
-#     # 点击基本资料
-#     time.sleep(3)
-#     wb.getElement("xpath", "//*[text()='testSeller03']").click()
-#     time.sleep(1)
-#     wb.getElement("xpath", "//*[text()='基础资料']").click()
+def test_baseinfo():
+    wb = login()
+    # 点击基本资料
+    try:
+        time.sleep(3)
+        wb.getElement("xpath", "//div[@class='tb-userinfo-name'][1]/a").click()
+        # wb.getElement("xpath", "//*[text()='testSeller03']").click()
+        time.sleep(2)
+        # wb.getElement("xpath", "//*[text()='基础资料']").click()
+        wb.getElement("xpath", "//a[@href='https://blink.qq.com/seller/memberself/index/view/1']").click()
+        # wb.getElement("xpath","//li[@class='tb-userinfo-item primary__link-hover'][1]/a").click()
+    except:
+        wb.get_screenshot()
+        raise
+    #     time.sleep(3)
 
 
-#     time.sleep(3)
 #     wb.driver.close()
 #
 #
@@ -120,13 +135,14 @@ def login():
 #     wb.driver.close()
 
 #
-def test_logout():
-    wb = login()
-    time.sleep(1)
-    wb.getElement("xpath", "//*[text()='testSeller03']").click()
-    time.sleep(1)
-    wb.getElement("xpath", "//*[text()='退出登录']").click()
-    time.sleep(3)
+
+# def test_logout():
+#     wb = login()
+#     time.sleep(1)
+#     wb.getElement("xpath", "//*[text()='testSeller03']").click()
+#     time.sleep(1)
+#     wb.getElement("xpath", "//*[text()='退出登录']").click()
+#     time.sleep(3)
 
 
 if __name__ == '__main__':

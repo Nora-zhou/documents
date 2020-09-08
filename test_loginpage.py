@@ -26,7 +26,7 @@ def login():
         #     "document.getElementsByClassName(\"sign-btn primary__color primary__link-hover sign-in cursor-pointer\")[0].click()")
         # 点击登录按钮
         wb.getElement("xpath",
-                      "//[@class='sign-btn primary__color primary__link-hover sign-in cursor-pointer']").click()
+                      "//a[@class='sign-btn primary__color primary__link-hover sign-in cursor-pointer']").click()
 
         # 切换到登录框
         wb.driver.switch_to_frame("SignIn-ZH_CN")

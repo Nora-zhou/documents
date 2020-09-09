@@ -14,12 +14,12 @@ from TestCase.pageUtils import *
 def login():
     try:
         print("11111111111111")
-        # url = "https://oablink.qq.com/b2bshop/index/industrySites/235676754772303872"
-        # login_name = "colorful"
-        # login_password = "123@qq"
-        #
-        # wb = webutils(browser='chrome')
-      
+        url = "https://oablink.qq.com/b2bshop/index/industrySites/235676754772303872"
+        login_name = "colorful"
+        login_password = "123@qq"
+
+        wb = webutils(browser='chrome')
+
 
         wb.driver.get(url)
         # wb.driver.delete_all_cookies()

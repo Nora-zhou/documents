@@ -51,9 +51,10 @@ def login():
         wb.get_screenshot()
         raise
 
-    status = '请控制拼图块对齐缺口'
-    while status == "请控制拼图块对齐缺口" or status == "Put the piece right into the slot":
+    text1 = None
 
+    # while status == "请控制拼图块对齐缺口" or status == "Put the piece right into the slot":
+    while text1 == None:
         block = wb.getElement("id", "tcaptcha_drag_thumb")
         wb.getElement("xpath", "//*[@id='reload']/div").click()
 
@@ -63,15 +64,19 @@ def login():
         action.click_and_hold(block).move_by_offset(210, 0).release().perform()
 
         # status = wb.getElement("id", "statusSuccess")
-        # time.sleep(2)
-        try:
-            WebDriverWait(wb, 5).until(EC.presence_of_all_elements_located(By.XPATH("//*[@id='tcaptcha_note']")))
-            wb.wait_element(["xpath", "//*[@id='tcaptcha_note']"])
-            status = wb.getElement("xpath", "//*[@id='tcaptcha_note']").text
-        except:
-            wb.get_screenshot()
-            status = ''
-        print(status)
+        #wb.wait_element(["id","statusSuccess"])
+        #time.sleep(1)
+        text1 = wb.find_element_check("//*[@id='statusSuccess']")
+        # try:
+        #     WebDriverWait(wb, 5).until(EC.presence_of_all_elements_located(By.XPATH("//*[@id='tcaptcha_note']")))
+        #     wb.wait_element(["xpath", "//*[@id='tcaptcha_note']"])
+        #     # status = wb.getElement("xpath", "//*[@id='tcaptcha_note']").text
+        #     text = wb.getElement("id", "statusSuccess").text
+        # except:
+        #     wb.get_screenshot()
+        #     text = ''
+
+        print(text1)
         # if status == "请控制拼图块对齐缺口":
         #
         #     print("pass")

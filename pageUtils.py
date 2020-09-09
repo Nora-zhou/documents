@@ -181,7 +181,12 @@ class webutils():
         :return:  退出浏览器
         '''
         self.driver.quit()
-
+    def find_element_check(self,element):
+        try:
+            WebDriverWait(self.driver, 5).until(lambda driver: self.driver.find_element_by_xpath(element).is_displayed())
+            return self.driver.find_element_by_xpath(element)
+        except:
+            print("error")
     def find_element(self, element):
         """
         Judge element positioning way, and returns the element.
@@ -325,6 +330,17 @@ class webutils():
         self.wait_element(element)
         return self.find_element(element).text
 
+    def isElementExist(self, element):
+        flag = True
+        browser = self.driver
+        try:
+            browser.find_element_by_xpath(element)
+            return flag
+
+        except:
+            flag = False
+            return flag
+
     def get_display(self, element):
         """
         功能：判断元素是否显示
@@ -355,8 +371,12 @@ class webutils():
         :param file_path:  文件路径
         :return:
         """
+        if not os.path.exists('./log/'):
+            os.mkdir('./log/')
+
         rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
-        screen_name = './' + rq + '.png'
+        screen_name = './log/'+'rq'+ rq + '.png'
+        print(screen_name)
         self.driver.save_screenshot(screen_name)
         #self.driver.get_screenshot_as_file(file_path)
 
